@@ -11,10 +11,12 @@ on:
     branches: [ master ]
 
 jobs:
+  # todo: linting, caching 
   build:
-
+    
     runs-on: ubuntu-latest
-
+  
+    # Runs across multiple NodeJS versions
     strategy:
       matrix:
         node-version: [10.x, 12.x, 14.x]
@@ -25,9 +27,9 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - name: Install
-      run: npm ci
-    - name: Build
-      run: npm run build --if-present
-    - name: Test
-      run: npm test
+    #- name: Install
+    #  run: npm ci
+    #- name: Build
+    #  run: npm run build --if-present
+    #- name: Test
+    #  run: npm test
