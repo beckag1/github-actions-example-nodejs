@@ -10,13 +10,15 @@
     "url": "git://github.com/travis-ci/travis-ci-node.js-example.git"
   },
   "scripts": {
-    "test": "vows test/*.js"
+    "test": "vows test/*.js",
+    "lint": "eslint"
   },
   "engines": {
     "node": ">= 0.4"
   },
   "dependencies": {},
   "devDependencies": {
+    "eslint": "^7.4.0",
     "vows": "latest"
   }
 }
