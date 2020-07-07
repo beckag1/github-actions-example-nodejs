@@ -60,7 +60,7 @@ jobs:
       
     # Build the node.js application
     - name: Build
-      run: npm run build
+      run: npm run build --if-present
     
     # Run the tests
     - name: Test
