@@ -1,8 +1,14 @@
-# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+#################################################
+# Node.js example for Actions                   #
+#                                               #
+# Note: This workflow will do an install of     #
+# node dependencies, build the source code and  #
+# run tests across different versions of node   #
+#################################################
 
 name: Node.js CI
 
+# Run when a change is pushed
 on:
   push:
     branches: [ master ]
@@ -11,26 +17,15 @@ on:
 
 env:
   # Relative path to your .npm folder
-  SOURCE-DIR: ~/.npm
+  SOURCE-DIR: ./PATH/TO/YOUR/NPM/FILES/
 
 jobs:
-  
-  # This job runs eslint across files 
-  eslint:
-    name: runner / eslint
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v1
-      - name: eslint
-        uses: reviewdog/action-eslint@v1
-        with:
-          reporter: github-pr-review # Change reporter.
-          eslint_flags: 'src/'
           
   build:
 
     runs-on: ubuntu-latest
-
+    
+    # Run across multiple node.js versions
     strategy:
       matrix:
         node-version: [10.x, 12.x, 14.x]
@@ -49,21 +44,24 @@ jobs:
       env:
         cache-name: cache-node-modules
       with:
-        # npm cache files are stored in `~/.npm` on Linux/macOS
         path: $SOURCE-DIR
         key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
         restore-keys: |
           ${{ runner.os }}-build-${{ env.cache-name }}-
           ${{ runner.os }}-build-
           ${{ runner.os }}-
-
-              
+    # Install dependencies          
     - name: Install
       run: npm install
     
+    # Run the linting script (this needs to be pre-configured)
+    - name: Linting
+      run: npm run lint
+      
+    # Build the node.js application
     - name: Build
-      run: npm run build --if-present
+      run: npm run build
     
+    # Run the tests
     - name: Test
       run: npm test
-
