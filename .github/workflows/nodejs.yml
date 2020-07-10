@@ -1,67 +1,59 @@
 #################################################
 # Node.js example for Actions                   #
 #                                               #
-# Note: This workflow will do an install of     #
-# node dependencies, build the source code and  #
-# run tests across different versions of node   #
+# This workflow will do an install of           #
+# node dependencies, run lint script, build the #
+# source code and run tests.                    #
+# It will also cache node modules.              #
 #################################################
 
-name: Node.js CI
+name:                 Node.js CI
 
-# Run when a change is pushed
 on:
   push:
-    branches: [ master ]
+    branches:         [ master ]
   pull_request:
-    branches: [ master ]
-
-env:
-  # Relative path to your .npm folder
-  SOURCE-DIR: ./PATH/TO/YOUR/NPM/FILES/
+    branches:         [ master ]
 
 jobs:
-          
+
   build:
 
-    runs-on: ubuntu-latest
-    
-    # Run across multiple node.js versions
-    strategy:
-      matrix:
-        node-version: [10.x, 12.x, 14.x]
+    runs-on:          ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+    - uses:           actions/checkout@v2
+
+    - name:           Use Node.js 14.x
+      uses:           actions/setup-node@v1
       with:
-        node-version: ${{ matrix.node-version }}
+        node-version: 14.x
 
     # Cache node modules
-    - name: Cache node modules
-      uses: actions/cache@v2
+    - name:           Cache node modules
+      uses:           actions/cache@v2
       env:
-        cache-name: cache-node-modules
+        cache-name:   cache-node-modules
       with:
-        path: $SOURCE-DIR
-        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+        path:         ~/.npm
+        key:          ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
         restore-keys: |
           ${{ runner.os }}-build-${{ env.cache-name }}-
           ${{ runner.os }}-build-
           ${{ runner.os }}-
-    # Install dependencies          
-    - name: Install
-      run: npm install
-    
+
+    # Install dependencies
+    - name:           Install
+      run:            npm install
+
     # Run the linting script (this needs to be pre-configured)
-    - name: Linting
-      run: npm run lint
-      
+    - name:           Linting
+      run:            npm run lint --if-present
+
     # Build the node.js application
-    - name: Build
-      run: npm run build --if-present
-    
+    - name:           Build
+      run:            npm run build --if-present
+
     # Run the tests
-    - name: Test
-      run: npm test
+    - name:           Test
+      run:            npm test
